@@ -1,0 +1,134 @@
+HTTP status codes are issued by a server in response to a client's request made to the server. They provide information about the result of the request. They are grouped into five categories based on the first digit of the code.
+
+Here’s a summary of HTTP status codes:
+=======================================
+
+1. 1xx - Informational
+=======================
+
+These codes indicate that the request has been received and the process is continuing.
+
+Code	Meaning
+100	Continue
+101	Switching Protocols
+102	Processing
+
+=========================================================================================================================================
+2. 2xx - Successful
+====================
+
+These codes indicate that the request was successfully received, understood, and accepted.
+
+Code	Meaning
+200	OK
+201	Created
+202	Accepted
+204	No Content
+205	Reset Content
+206	Partial Content
+207	Multi-Status
+
+200 OK: The request was successful, and the server returned the requested data.
+
+201 Created: The request was successful, and a new resource was created.
+
+204 No Content: The request was successful, but there is no content to return (e.g., after a DELETE operation).
+
+=========================================================================================================================================
+
+3. 3xx - Redirection
+=====================
+
+These codes indicate that further action is required to complete the request. This is often used when a resource has been moved.
+
+Code	Meaning
+300	Multiple Choices
+301	Moved Permanently
+302	Found (Previously "Moved Temporarily")
+303	See Other
+304	Not Modified
+305	Use Proxy
+307	Temporary Redirect
+308	Permanent Redirect
+
+301 Moved Permanently: The resource has permanently moved to a new location.
+
+302 Found: The resource is temporarily available at a different location.
+
+304 Not Modified: The resource has not been modified since the last request, so the cached version can be used.
+
+=========================================================================================================================================
+
+4. 4xx - Client Error
+======================
+
+These codes indicate that the client seems to have made an error in the request.
+
+Code	Meaning
+400	Bad Request
+401	Unauthorized
+403	Forbidden
+404	Not Found
+405	Method Not Allowed
+408	Request Timeout
+409	Conflict
+410	Gone
+413	Payload Too Large
+414	URI Too Long
+415	Unsupported Media Type
+429	Too Many Requests
+
+400 Bad Request: The server cannot process the request due to a client error (e.g., malformed syntax).
+
+401 Unauthorized: Authentication is required and has failed or has not been provided.
+
+403 Forbidden: The server understood the request, but it refuses to authorize it.
+
+404 Not Found: The requested resource could not be found.
+
+408 Request Timeout: The server timed out waiting for the request.
+
+429 Too Many Requests: The user has sent too many requests in a given amount of time (rate limiting).
+
+=========================================================================================================================================
+
+5. 5xx - Server Error
+======================
+
+These codes indicate that the server failed to fulfill a valid request.
+
+Code	Meaning
+500	Internal Server Error
+501	Not Implemented
+502	Bad Gateway
+503	Service Unavailable
+504	Gateway Timeout
+505	HTTP Version Not Supported
+
+500 Internal Server Error: A generic error occurred on the server.
+
+502 Bad Gateway: The server received an invalid response from the upstream server.
+
+503 Service Unavailable: The server is temporarily unavailable (usually due to overload or maintenance).
+
+504 Gateway Timeout: The server did not receive a timely response from an upstream server.
+
+=========================================================================================================================================
+
+Key Takeaways:
+===============
+
+2xx codes represent success.
+
+4xx codes represent client errors.
+
+5xx codes represent server errors.
+
+1xx codes are informational responses.
+
+3xx codes indicate redirection.
+
+These status codes help clients (like browsers or API consumers) understand how to proceed with their requests or handle any errors.
+
+
+

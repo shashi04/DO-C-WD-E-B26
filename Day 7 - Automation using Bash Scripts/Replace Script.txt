@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Input file
+input_file="input.txt"
+output_file="output.txt"
+
+# Replace "give" with "learning" in lines containing "welcome" from line 5 onward
+sed '5,$ {/welcome/ s/give/learning/g}' "$input_file" > "$output_file"
+
+
+
+######################################################################################################
+
+Explanation:
+=============
+5,$: Specifies that the operation should start from the 5th line (5) to the last line ($).
+
+/welcome/: This condition checks if the line contains the word "welcome".
+
+s/give/learning/g: This replaces every occurrence of "give" with "learning" on those lines that contain "welcome".
+
+"$input_file" > "$output_file": Reads from input.txt and writes the modified content to output.txt.
+
+#######################################################################################################
+
+How to Use:
+============
+Save your input text in input.txt.
+
+Run the script to create the modified output in output.txt.
+
+#######################################################################################################
+
+Input (input.txt):
+===================
+Line 1: This is a test.
+Line 2: Another test line.
+Line 3: Just another line.
+Line 4: Before the magic.
+Line 5: Welcome to the world, give and take.
+Line 6: Give me something, welcome again.
+Line 7: A line without the keyword.
+Line 8: Welcome, give it your best.
+
+
+#######################################################################################################
+
+Key Points:
+============
+This script efficiently replaces "give" with "learning" only in lines from the 5th line onward that contain the word "welcome".
+
+It uses sed's inline substitution with a condition to apply changes only where necessary.
+
+

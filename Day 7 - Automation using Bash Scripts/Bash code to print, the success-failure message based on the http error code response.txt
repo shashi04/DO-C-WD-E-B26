@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# URL to check
+URL="http://example.com"
+
+# Get HTTP status code
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" $URL)
+
+# Check if the HTTP code is in the range of success (2xx codes)
+if [[ "$HTTP_CODE" -ge 200 && "$HTTP_CODE" -lt 300 ]]; then
+    echo "Success! HTTP Status Code: $HTTP_CODE"
+else
+    echo "Failure! HTTP Status Code: $HTTP_CODE"
+fi
+
+########################################################################################################################################
+
+Explanation:
+=============
+curl -s -o /dev/null -w "%{http_code}" $URL: Fetches the HTTP status code.
+
+if [[ "$HTTP_CODE" -ge 200 && "$HTTP_CODE" -lt 300 ]]: Checks if the status code is between 200 and 299, which indicates a successful request.
+
+Status codes in the 2xx range (e.g., 200, 201) represent success.
+
+If the status code is outside this range (e.g., 400, 500), it indicates a failure.
+
+echo: Prints the success or failure message.
+
+########################################################################################################################################
+
+Explanation of curl -s -o /dev/null -w "%{http_code}" http://example.com:
+==========================================================================
+-s: Silent mode. It prevents the progress meter and error messages from being displayed.
+
+-o /dev/null: This tells curl to discard the body of the response. Only the headers are returned.
+
+-w "%{http_code}": This option specifies that curl should output the HTTP status code of the response.
+
+http://example.com: Replace this with the URL you want to check.
+
+########################################################################################################################################
+
+
+
+
+
+
