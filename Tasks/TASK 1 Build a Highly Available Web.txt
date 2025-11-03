@@ -1,0 +1,151 @@
+TASK 1: Build a Highly Available Web Application on AWS Using Linux, Bash, and Core AWS Services
+
+
+TASK OVERVIEW
+===============
+
+1. Create a VPC with public/private subnets.
+
+2. Launch EC2 instances in public subnets using a bash-script for user-data.
+
+3. Store static content (images/configs) in S3 using the AWS CLI.
+
+4. Attach EBS volume to EC2.
+
+5. Mount EFS to EC2 for shared storage.
+
+6. Set up IAM roles for EC2 & S3 access.
+
+7. Create a Load Balancer (ELB).
+
+8. Configure Auto Scaling Group (ASG).
+
+9. Deploy RDS MySQL in private subnets.
+
+10. Test high availability by scaling EC2 instances.
+
+
+
+DETAILED TASK EXPLANATION
+==========================
+
+Below is a step-by-step breakdown.
+
+
+PART 1 — VPC Setup (Networking)
+=================================
+
+Create a custom VPC:
+
+✅ 1 VPC (CIDR: 10.0.0.0/16)
+✅ Public Subnets (2) — for EC2 & Load Balancer
+✅ Private Subnets (2) — for Auto Scaling + RDS
+✅ Internet Gateway
+✅ NAT Gateway
+✅ Route Tables
+
+
+
+PART 2 — IAM Role & Policies
+=============================
+
+✅ An IAM Role for EC2 that allows:
+
+Access to S3
+
+Access to CloudWatch logs
+
+Access to SSM (optional)
+
+✅ An IAM user with only S3/EC2 permissions.
+
+
+PART 3 — EC2 Setup with Bash User-Data Script
+==============================================
+
+Launch an EC2 instance in a public subnet.
+
+Add a bash user-data script
+
+Downloads files from S3
+
+
+PART 4 — S3 Bucket & AWS CLI Usage
+===================================
+
+✅ Create an S3 bucket
+✅ Upload images/config files using AWS CLI
+✅ Configure bucket policy (optional)
+✅ Enable versioning
+
+
+PART 5 — Elastic Load Balancer (ELB)
+=====================================
+
+Create an Application Load Balancer (ALB):
+
+✅ Target group
+✅ Health checks
+✅ Register EC2 instances
+
+
+PART 6 — Auto Scaling Group (ASG)
+==================================
+
+Create an Auto Scaling Group for high availability:
+
+✅ Configure launch template
+✅ Min size: 1
+✅ Max size: 4
+✅ Scaling policy based on CPU usage
+
+
+PART 7 — EFS Setup (Shared Storage)
+====================================
+
+Create EFS and mount to EC2.
+
+Use shared directory for:
+✅ Shared HTML content
+✅ Application logs
+
+
+PART 8 — RDS MySQL in Private Subnets
+======================================
+
+Students deploy:
+
+✅ MySQL RDS
+✅ Multi-AZ
+✅ Password-based authentication
+✅ Connect EC2 → RDS using MySQL client
+
+
+PART 9 — Test High Availability
+================================
+
+Students must:
+
+✅ Stop an EC2 instance
+✅ Observe ALB routing traffic
+✅ Increase traffic and see auto scaling
+✅ Validate EFS shared data remains available
+✅ Validate EC2 can read/write to RDS
+
+
+
+THIS TASK COVERS ALL REQUIRED SERVICES
+=======================================
+Topic		Covered in Task
+Linux		Bash, Apache setup, EBS/EFS mount
+Bash 		User-data automation
+IAM		Roles, policies
+EC2		Web server + ASG
+S3		Static content, CLI
+AWS CLI		S3, EC2, IAM
+ELB		Application Load Balancer
+Auto Scaling	Launch Template, scale policies
+VPC		Full custom network
+EBS		Mounted volume
+EFS		Shared storage
+RDS		MySQL database
