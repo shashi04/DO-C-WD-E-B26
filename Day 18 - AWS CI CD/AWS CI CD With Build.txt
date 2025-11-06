@@ -1,0 +1,85 @@
+
+AWS CI CD with Build
+====================
+
+
+Step 1: Prepare Your Application Files and push it to GitHub
+-------------------------------------------------------------
+
+Link: https://github.com/shashi04/awsbuildtest
+
+============================================================================================
+Step 2: Create a CodeBuild Project:
+------------------------------------
+
+Log in to the AWS Management Console.
+
+Navigate to CodeBuild → Create Build Project.
+
+Fill out the basic configuration:
+-> Project Name: MySampleAppBuild
+-> Source Provider: GitHub
+-> Connect to GitHub and choose your repository.
+-> Branch: main
+
+In the Environment section:
+-> Choose Managed Image.
+-> Set Operating System to Amazon Linux 2.
+-> Set Runtime to Standard.
+-> Set Image to the latest version (e.g., aws/codebuild/amazonlinux2-x86_64-standard:4.0).
+-> Specify the buildspec.yml file or let AWS automatically detect it.
+-> In the Artifacts section, select S3.
+
+============================================================================================
+Step 3: Run the Build
+----------------------
+
+-> Start the build by clicking Start Build.
+-> Monitor logs to verify the build runs successfully.
+
+============================================================================================
+Step 4: Validate the Output
+----------------------------
+
+-> The output logs should show the "Hello, AWS CodeBuild!" message.
+
+============================================================================================
+Step 5: Setup CodePipeline
+---------------------------
+
+-> Go to AWS CodePipeline → Create Pipeline.
+
+-> Pipeline Name: MySampleAppPipeline.
+
+-> Source Stage:
+-> Source provider: GitHub.
+-> Connect to your repository and branch.
+
+Build Stage:
+-> Add a build stage with AWS CodeBuild (use the previously created build project).
+
+Deploy Stage:
+-> Deployment provider: CodeDeploy.
+-> Application name: MySampleAppDeployment.
+-> Deployment group: The group created earlier.
+
+============================================================================================
+Step 6: Start the Pipeline
+---------------------------
+
+-> Push changes to your GitHub repository.
+
+-> The pipeline will automatically trigger:
+-> Source stage pulls the code from GitHub.
+-> Build stage runs in CodeBuild.
+-> Deploy stage pushes the code to EC2 using CodeDeploy.
+
+============================================================================================
+Step 7: Validate Deployment
+----------------------------
+
+-> SSH into the EC2 instance.
+-> Check if the files are in /var/www/html.
+-> Access the application via the EC2 public IP.
+
+

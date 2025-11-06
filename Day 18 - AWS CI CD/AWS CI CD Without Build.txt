@@ -1,0 +1,104 @@
+
+AWS CI CD without Build
+==========================
+
+
+1. Setup an EC2 Instance
+--------------------------
+
+-> Launch an EC2 Instance:
+
+-> Use an Amazon Linux 2 AMI.
+-> Assign an IAM Role with the AmazonEC2RoleforAWSCodeDeploy policy.
+-> Open ports 22 (SSH) and 80 (HTTP) in the security group.
+
+===============================================================================================================
+2. Install the CodeDeploy Agent: SSH into the instance and run the following commands:
+--------------------------------------------------------------------------------------
+
+sudo yum update -y
+sudo yum install ruby -y
+sudo yum install wget -y
+cd /home/ec2-user
+wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install
+chmod +x ./install
+sudo ./install auto
+sudo service codedeploy-agent start
+
+===============================================================================================================
+3. Verify the CodeDeploy Agent:
+--------------------------------
+
+sudo service codedeploy-agent status
+
+===============================================================================================================
+4. Create an Application in CodeDeploy
+---------------------------------------
+
+-> Navigate to AWS CodeDeploy.
+-> Create a new application:
+-> Select EC2/On-Premises as the compute platform.
+
+Create a deployment group:
+
+-> Attach the IAM role AWSCodeDeployRole to your deployment group.
+-> Add the EC2 instance using the instance tag or name.
+
+===============================================================================================================
+5. Prepare Your Application Files
+----------------------------------
+
+Create an AppSpec File: This file defines deployment instructions. Example appspec.yml:
+
+version: 0.0
+os: linux
+files:
+  - source: /app
+    destination: /var/www/html
+hooks:
+  AfterInstall:
+    - location: scripts/install_dependencies.sh
+      timeout: 300
+      runas: root
+
+
+Application Folder Structure:
+
+my-app/
+├── appspec.yml
+├── app/
+│   └── index.html
+└── scripts/
+    └── install_dependencies.sh
+
+
+Example install_dependencies.sh:
+
+#!/bin/bash
+sudo yum install httpd -y
+sudo service httpd start
+
+===============================================================================================================
+6. Publish the code to GitHub repository
+-----------------------------------------
+
+Link: https://github.com/shashi04/Guvi-AWS-Static-CICD
+
+===============================================================================================================
+7. Setup CodePipeline
+-----------------------
+
+-> Go to AWS CodePipeline.
+
+-> Create a new pipeline:
+-> Source: Choose GitHub and connect your repository.
+-> Build: Skip this step (optional for simple deployments).
+-> Deploy: Choose AWS CodeDeploy and select your application and deployment group.
+
+===============================================================================================================
+8. Deploy the Application
+---------------------------
+
+-> Push changes to your GitHub repository.
+-> CodePipeline will trigger automatically, and CodeDeploy will deploy your application to the EC2 instance.
+
