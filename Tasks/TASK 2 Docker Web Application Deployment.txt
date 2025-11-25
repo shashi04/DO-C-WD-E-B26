@@ -1,0 +1,43 @@
+Task 2: Docker Web Application Deployment using Amazon ECR & EC2
+
+
+Objective:
+===========
+To containerize a web application using Docker, push the image to Amazon ECR, and deploy it on an EC2 instance.
+
+Skills Learned:
+================
+Linux • Docker • Dockerfile • Docker Images • Docker Swarm • Containers • AWS EC2 • AWS ECR • Networking • AWS CLI • Deployment
+
+
+Task Requirements
+==================
+
+You must:
+
+-> Create a simple web application using HTML.
+
+-> Containerize it using Docker.
+
+-> Push the Docker image to AWS ECR.
+
+-> Pull and deploy the image with Replica 4 using Docker Swarm.
+
+-> Have 2 Worker Nodes in the Swarm
+
+-> Access the application publicly via EC2 Public IP.
+
+
+Detailed Instructions
+=======================
+
+| Phase   | Description                         |
+| ------- | ----------------------------------- |
+| Phase 1 | Install & configure Docker on EC2   |
+| Phase 2 | Create web application & Dockerfile |
+| Phase 3 | Build & run the image locally       |
+| Phase 4 | Push image to AWS ECR               |
+| Phase 5 | Pull & deploy from ECR              |
+
+
+Expected output → Application accessible in browser via http://EC2-Public-IP
