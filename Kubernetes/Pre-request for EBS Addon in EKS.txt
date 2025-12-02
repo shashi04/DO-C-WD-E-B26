@@ -1,0 +1,52 @@
+Pre-request for EBS in EKS
+============================
+
+1. Enable the IAM OIDC Provider
+
+You can do this easily with eksctl:
+
+eksctl utils associate-iam-oidc-provider \
+  --region <your-region> \
+  --cluster <your-cluster-name> \
+  --approve
+
+
+✅ This sets up the OIDC identity provider needed for Kubernetes to use AWS IAM roles via service accounts.
+
+
+🔁 2. Create the IAM Service Account 
+
+
+eksctl create iamserviceaccount \
+  --name ebs-csi-controller-sa \
+  --namespace kube-system \
+  --cluster <your-cluster-name> \
+  --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
+  --approve \
+  --role-name AmazonEKS_EBS_CSI_DriverRole
+
+
+
+
+✅ 3. Install the EBS CSI Driver Add-on
+
+Once the role is created, install the driver:
+
+aws eks create-addon \
+  --cluster-name <your-cluster-name> \
+  --addon-name aws-ebs-csi-driver \
+  --service-account-role-arm arn:aws:iam::<account-id>:role/AmazonEKS_EBS_CSI_DriverRole \
+  --region <your-region>
+
+
+🔍 4. Verify CSI Driver is Running
+
+kubectl get pods -n kube-system | grep ebs
+
+
+Should show:
+
+ebs-csi-controller-...   Running
+ebs-csi-node-...         Running
+
+

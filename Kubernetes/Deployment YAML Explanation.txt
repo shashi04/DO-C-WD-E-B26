@@ -1,0 +1,41 @@
+Deployment YAML
+================
+
+apiVersion: apps/v1   -> Tells k8s which version of API is used
+kind: Deployment  -> Tells k8s that this is used for Deployment
+
+============================================================================================================================================
+
+metadata:
+  name: my-app   -> Name of the Deployment - This is for Human Identification
+
+  labels:
+    env: dev  -> key-Value pairs used to group and identify resources
+
+============================================================================================================================================
+spec:
+  replicas: 2  -> How many pods to be running
+
+  selector:
+    matchLabels:
+      env: dev  -> Select the pods that has the label "env: dev". This is to identify which pod belongs to this deployment. 
+
+The selector will filter the pods that has the label "env: dev"
+============================================================================================================================================
+
+
+  template:    -> This defines the pod template. k8s will be using this template to create the pods 
+
+    metadata:
+      labels:
+        env: dev -> The pods would be having the label. 
+
+
+    spec:
+      containers:
+        - name: dev-container  -> This is the name of the Conatiner withing the Pod
+          image: <aws-account-id>.dkr.ecr.<your-region>.amazonaws.com/my-app:latest
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: ecr-secret

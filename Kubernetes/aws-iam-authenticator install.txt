@@ -1,0 +1,22 @@
+wget https://go.dev/dl/go1.23.linux-amd64.tar.gz
+
+
+sudo tar -C /usr/local -xzf go1.23.linux-amd64.tar.gz
+
+
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+source ~/.bashrc
+
+
+go version
+
+
+go install github.com/kubernetes-sigs/aws-iam-authenticator/cmd/aws-iam-authenticator@latest
+
+
+mv ~/go/bin/aws-iam-authenticator /usr/local/bin/
+
+
+aws-iam-authenticator version
+
+

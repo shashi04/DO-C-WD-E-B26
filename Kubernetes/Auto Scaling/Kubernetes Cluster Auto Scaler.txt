@@ -1,0 +1,90 @@
+Kubernetes Cluster Auto Scaler
+================================
+
+
+Step 1: Enable the IAM for interaction with Auto Scaling Group
+===============================================================
+
+Create an IAM Policy For Worker Node
+
+1. After the creation of EKS, The Cluster Autoscaler requires the following IAM permissions to make calls to AWS APIs on your behalf.
+
+2. Go to IAM Console -> Select Roles -> Select the Worker node role.
+
+3. Click on Add inline policy, and make a Custom policy with the following policy.
+
+IAM Policy.
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:DescribeLaunchConfigurations",
+                "autoscaling:DescribeTags",
+                "autoscaling:SetDesiredCapacity",
+                "autoscaling:TerminateInstanceInAutoScalingGroup",
+                "ec2:DescribeLaunchTemplateVersions",
+                "eks:DescribeNodegroup"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+
+Step 2: Worker node ASG
+=========================
+
+1. Go to the EC2 Autoscaling group, you see there an autoscaling group of the EKS.
+
+2. Check the min and max configuration of your worker nodes.
+
+3. if your max capacity=2 and you already launch a 2 worker node, the Cluster Autoscaler not Spain the new node when the load is increased.
+
+4. So change the Min and Max configuration.
+
+E.X: Min=2 , Max= 5.
+
+
+Step 3: Deploy the Cluster Autoscaler
+=======================================
+
+1. Deploy the Cluster Autoscaler to your cluster with the following command.
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/autoscaler/master/cluster-autoscaler/cloudprovider/aws/examples/cluster-autoscaler-autodiscover.yaml
+
+2. Add the cluster-autoscaler.kubernetes.io/safe-to-evict annotation to the deployment with the following command.
+
+kubectl -n kube-system annotate deployment.apps/cluster-autoscaler cluster-autoscaler.kubernetes.io/safe-to-evict="false"
+
+3. Edit the Cluster Autoscaler deployment with the following command.
+
+kubectl -n kube-system edit deployment.apps/cluster-autoscaler
+
+Edit the cluster-autoscaler container command to replace <YOUR CLUSTER NAME> with your cluster's name, and add the following options.
+
+--balance-similar-node-groups
+--skip-nodes-with-system-pods=false
+
+Save (Esc -> :wq) and close the file to apply the changes.
+
+
+Step 4: Update the Image of the deployment
+===========================================
+
+The image should be compatible with the kubernetes version you have used in EKS.
+
+Since we have used 1.30 version of kubernetes in EKS, we will use 1.30.1 image of cluster-autoscaler.
+
+kubectl set image deployment cluster-autoscaler -n kube-system cluster-autoscaler=registry.k8s.io/autoscaling/cluster-autoscaler:v1.30.1
+
+
+Step 5: Check the Cluster Autoscaler logs
+==========================================
+
+kubectl logs -n kube-system deployment.apps/cluster-autoscaler

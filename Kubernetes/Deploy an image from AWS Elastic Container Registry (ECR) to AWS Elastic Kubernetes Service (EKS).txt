@@ -1,0 +1,116 @@
+
+Deploy an image from AWS Elastic Container Registry (ECR) to AWS Elastic Kubernetes Service (EKS)
+==================================================================================================
+
+
+1. Prerequisites
+=================
+
+Ensure you have the following set up:
+✅ AWS CLI, kubectl, and AWS IAM Authenticator installed
+✅ An AWS EKS cluster running
+✅ A Docker image pushed to AWS ECR
+✅ Your kubeconfig configured to connect to the EKS cluster
+
+2. Authenticate with AWS ECR
+=============================
+-> AWS ECR requires authentication before pulling images. Run the following command:
+
+aws ecr get-login-password --region <your-region> | docker login --username AWS --password-stdin <aws-account-id>.dkr.ecr.<your-region>.amazonaws.com
+
+
+Replace:
+=========
+-> <your-region> with your AWS region (e.g., us-east-1)
+-> <aws-account-id> with your AWS account ID
+
+
+3. Create an ImagePullSecret
+=============================
+-> If your EKS nodes don't have IAM permissions for ECR, create a secret manually:
+
+kubectl create secret docker-registry ecr-secret \
+  --docker-server=<aws-account-id>.dkr.ecr.<your-region>.amazonaws.com \
+  --docker-username=AWS \
+  --docker-password=$(aws ecr get-login-password --region <your-region>)
+
+
+4. Create a Kubernetes Deployment
+==================================
+-> Create a YAML file (deployment.yml) for the Kubernetes deployment.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app
+          image: <aws-account-id>.dkr.ecr.<your-region>.amazonaws.com/my-app:latest
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: ecr-secret
+
+
+Replace:
+========
+-> <aws-account-id> with your AWS account ID
+-> <your-region> with your AWS region
+-> my-app:latest with your actual image name and tag
+
+
+
+5. Deploy to EKS
+=================
+-> Run the following command to deploy the application:
+
+kubectl apply -f deployment.yaml
+
+
+6. Create a Service to Expose the App
+======================================
+-> If you need external access, create a Service (service.yml):
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+
+Apply the service:
+==================
+
+kubectl apply -f service.yaml
+
+
+7. Verify the Deployment
+=========================
+-> Check the status of your deployment:
+
+kubectl get pods
+
+
+Get the external LoadBalancer URL:
+===================================
+
+kubectl get svc my-app-service

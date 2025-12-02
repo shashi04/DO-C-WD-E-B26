@@ -1,0 +1,135 @@
+Amazon EKS (Elastic Kubernetes Service)
+========================================
+
+
+Amazon EKS (Elastic Kubernetes Service) simplifies Kubernetes deployment on AWS. eksctl is a command-line tool that automates cluster creation and management.
+
+
+Prerequisites
+==============
+
+Before proceeding, ensure the following are installed and configured on your machine:
+
+Install AWS CLI
+
+Link - https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+
+Verify installation:
+=====================
+
+aws --version
+
+
+Configure AWS credentials:
+==========================
+
+aws configure
+
+
+Enter your AWS Access Key, Secret Key, Region, and Output Format (json/yaml)
+
+=============================================================================================================================
+
+Install eksctl
+===============
+
+-> Download eksctl for Windows: (Use Powershell)
+
+choco install eksctl -y
+
+-> Verify installation:
+
+eksctl version
+
+=============================================================================================================================
+
+Install kubectl (Kubernetes CLI)
+=================================
+
+-> Install via Chocolatey:
+
+choco install kubernetes-cli -y
+
+
+-> Verify installation:
+
+kubectl version --client
+
+=============================================================================================================================
+
+Install AWS IAM Authenticator (Optional, if not installed automatically)
+==============================
+
+choco install aws-iam-authenticator -y
+
+
+=============================================================================================================================
+
+Steps:
+======
+
+Step 1: Create an EKS Cluster Using eksctl
+===========================================
+
+-> Run the following command to create a simple EKS cluster with 1 node:
+
+eksctl create cluster --name my-cluster --region ap-south-1 --nodegroup-name my-nodes --node-type t3.medium --nodes 1
+
+
+Step 2: Verify Cluster Creation
+================================
+
+-> Cluster provisioning takes around 15–20 minutes. Once complete, verify using:
+
+eksctl get cluster --region ap-south-1
+
+
+Step 3: Update Kubeconfig
+==========================
+
+-> To interact with the EKS cluster using kubectl:
+
+aws eks update-kubeconfig --region ap-south-1 --name my-cluster
+
+
+Step 4: Validate Cluster Connection
+====================================
+
+kubectl get nodes
+
+If successful, it should display the nodes in the cluster.
+
+
+Step 5: Deploy a Sample Application (Optional)
+====================================
+
+To ensure everything is working fine, deploy an Nginx deployment:
+
+-> Create a deployment:
+
+kubectl create deployment nginx --image=nginx
+
+
+-> Expose the deployment:
+
+kubectl expose deployment nginx --type=LoadBalancer --port=80
+
+
+-> Verify service status:
+
+kubectl get svc
+
+
+Step 6: Deleting the EKS Cluster
+=================================
+
+If you no longer need the cluster, delete it to save costs:
+
+eksctl delete cluster --name my-cluster --region us-east-1
+
+
+
+
+
+

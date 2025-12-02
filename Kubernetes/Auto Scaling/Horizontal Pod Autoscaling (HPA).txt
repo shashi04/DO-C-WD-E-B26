@@ -1,0 +1,102 @@
+Horizontal Pod Autoscaling (HPA) in Kubernetes
+===============================================
+
+Horizontal Pod Autoscaler (HPA) automatically scales the number of replica pods in a Kubernetes Deployment, ReplicaSet, or StatefulSet based on CPU or memory utilization or custom metrics.
+
+
+How HPA Works
+=============
+
+1. Metrics Collection
+-> HPA uses metrics-server to gather CPU and memory usage.
+-> It can also use custom metrics from Prometheus, Datadog, etc.
+
+2. Scaling Decision
+-> Compares actual resource usage against the defined threshold.
+-> If resource usage exceeds the threshold, it increases pods.
+-> If usage drops, it reduces the pod count.
+
+3. Scaling Execution
+-> Kubernetes adjusts the replica count of the workload.
+
+
+Enable HPA in a Cluster
+========================
+
+✅ Check if metrics-server is running:
+
+kubectl get deployment metrics-server -n kube-system
+
+
+❌ If not installed:
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+
+✅ Check pod metrics:
+
+kubectl top pods
+
+ 
+
+
+Ensure metrics-server is installed
+===================================
+
+kubectl get deployment -n kube-system metrics-server
+
+
+If not installed, deploy it:
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+
+-> Check Pod Metrics:
+
+kubectl top pod
+
+
+HPA Configuration Example
+==========================
+
+-> Deploy a Sample Application
+
+-> Create a simple deployment with resource limits:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          resources:
+            requests:
+              cpu: "100m"
+            limits:
+              cpu: "200m"
+
+
+-> Apply Horizontal Pod Autoscaler
+
+kubectl autoscale deployment nginx-deployment --cpu-percent=50 --min=1 --max=5
+
+
+--cpu-percent=50: Scale when CPU exceeds 50%.
+--min=1: Minimum 1 replica.
+--max=5: Maximum 5 replicas.
+
+
+-> Verify HPA
+
+kubectl get hpa

@@ -1,0 +1,115 @@
+Minikube
+=========
+
+Minikube is a tool that runs a single-node Kubernetes cluster locally on your machine. It's ideal for development and testing purposes, allowing you to quickly spin up a Kubernetes environment to experiment with.
+
+Here’s how you can get started with Minikube:
+
+Install Minikube:
+==================
+
+-> On macOS: brew install minikube
+-> On Linux: Follow the installation guide on the official Minikube site.
+-> On Windows: You can use Chocolatey with choco install minikube.
+
+Steps
+======
+
+Step 1: Prerequisites
+======================
+
+Ensure your system meets the following requirements:
+
+-> Windows 10 or later (64-bit)
+-> Hyper-V (Windows 10 Pro, Enterprise, or Education) or VirtualBox installed (If you use Windows Home, install VirtualBox)
+-> Minimum 2 CPU cores, 2GB RAM, and 20GB disk space
+-> kubectl installed (optional, but recommended)
+
+Step 2: Install Minikube
+=========================
+
+Install via Chocolatey (Recommended)
+======================
+
+-> Open PowerShell as Administrator.
+-> Run the following command:
+
+choco install minikube -y
+
+-> Once installed, verify the version:
+
+minikube version
+
+
+Step 3: Install kubectl (Kubernetes CLI)
+=========================================
+
+-> Run the following command in PowerShell:
+
+choco install kubernetes-cli -y
+
+
+-> Verify the installation:
+
+kubectl version --client
+
+
+Step 4: Start Minikube
+=======================
+
+-> Open PowerShell as Administrator.
+
+-> Run the following command to start Minikube with Hyper-V:
+
+minikube start --driver=hyperv
+
+
+OR, if using VirtualBox:
+
+minikube start --driver=virtualbox
+
+
+-> Verify the status:
+
+minikube status
+
+
+Step 5: Enable Dashboard (Optional)
+=========================
+
+-> You can launch the Kubernetes dashboard with:
+
+minikube dashboard
+
+
+Step 6: Deploy an Application (Test)
+==============================
+
+-> To test, run:
+
+kubectl create deployment hello-minikube --image=kicbase/echo-server:1.0
+kubectl expose deployment hello-minikube --type=NodePort --port=8080
+
+
+-> Find the application URL:
+
+minikube service hello-minikube --url
+
+Open the URL in a browser.
+
+
+Step 7: Stop and Delete Minikube (If Needed)
+=================================
+
+-> To stop Minikube:
+
+minikube stop
+
+
+-> To delete Minikube completely:
+
+minikube delete
+
+
+
+

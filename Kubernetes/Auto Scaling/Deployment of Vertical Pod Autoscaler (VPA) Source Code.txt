@@ -1,0 +1,97 @@
+Deployment of Vertical Pod Autoscaler (VPA) Source Code
+========================================================
+
+
+-> To initiate the deployment process for the Vertical Pod Autoscaler, follow these precise steps:
+
+-> Before moving forward, it is imperative to confirm the presence of the Metrics Server on your Kubernetes cluster. Ensure the Metrics Server is installed to facilitate accurate monitoring and analysis of resource metrics within your Kubernetes cluster. This step is crucial for seamless progression in subsequent tasks.
+
+Step 1: Navigate to Your Desired Directory
+============================================
+
+-> Using the ‘cd’ command, navigate to the directory where you want to download the Vertical Pod Autoscaler source code. Ensure you are in the correct directory to streamline the download process.
+
+Step 2: Clone the Kubernetes Autoscaler Repository
+===================================================
+
+-> Execute the following command to clone the official Kubernetes Autoscaler repository from GitHub. This action downloads the essential source code for Vertical Pod Autoscaler
+
+git clone https://github.com/kubernetes/autoscaler.git
+
+By running this command, you fetch the latest version of VPA’s source code.
+
+
+Step 3: Change Directory to Vertical Pod Autoscaler
+====================================================
+
+cd autoscaler/vertical-pod-autoscaler/
+
+This command ensures you are now within the specific Vertical Pod Autoscaler directory, where you can configure, customize, and further deploy the VPA components as needed.
+
+
+Step 4: Deploy VPA Components
+==============================
+
+Execute the following command in your terminal:
+
+./hack/vpa-up.sh
+
+
+-> The vpa-up.sh script streamlines the deployment process by executing multiple essential kubectl commands, seamlessly integrating the configuration and initializing the required pods within the kube-system namespace of your cluster. This automated approach ensures a hassle-free setup, eliminating the need for manual intervention and reducing the chance of errors.
+
+
+This single command performs several crucial tasks:
+====================================================
+-> Creation of Custom Resource Definitions (CRDs): Essential for defining custom resources like VPA in your Kubernetes cluster.
+-> Setting Up Permissions with RBAC: Role-Based Access Control (RBAC) permissions are established, ensuring secure access control within your cluster.
+-> Deployment of VPA Components: The VPA components, including the recommender, updater, and admission controller, are deployed, ready to optimize your cluster’s performance.
+
+
+Step 5: Validating Successful VPA Deployment:
+==============================================
+
+After executing the deployment script, it’s essential to confirm that the VPA components have been successfully deployed and are running as intended.
+
+To do so, use the following kubectl command:
+
+kubectl get pods -n kube-system | grep vpa
+
+
+This command efficiently filters and displays all pods within the kube-system namespace containing “vpa” in their names. You should observe three pods listed, each corresponding to a specific VPA component: the recommender, updater, and admission controller.
+
+
+Step 6: Create a VPA Object
+============================
+
+-> Begin by creating a VPA object using a YAML configuration file, specifying your desired policies. Below is a simple example of a VPA object configuration:
+
+apiVersion: "autoscaling.k8s.io/v1"
+kind: VerticalPodAutoscaler
+metadata:
+  name: stress-vpa
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: high-cpu-utilization-deployment
+  updatePolicy:
+    updateMode: Auto
+  resourcePolicy:
+    containerPolicies:
+      - containerName: '*'
+        minAllowed:
+          cpu: 100m
+          memory: 50Mi
+        maxAllowed:
+          cpu: 200m  #maximum vpa will be allocating this many cpus even if demand is higher.
+          memory: 500Mi
+        controlledResources: ["cpu", "memory"]
+
+
+By creating this VPA object, you enable VPA to optimize the resource allocation for the specified pods, ensuring efficient utilization within your cluster.
+
+
+Step 7: Check the VPA
+
+kubectl get vpa -n <Namespace>
+

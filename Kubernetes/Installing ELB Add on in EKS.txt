@@ -1,0 +1,34 @@
+Installing ELB Add on in EKS
+
+
+Pre Request:
+
+Install Helm:
+
+1. Install Helm using the official script (recommended)
+
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+
+This script:
+
+Detects your OS and architecture
+
+Downloads the latest Helm 3 release
+
+Installs it into /usr/local/bin/helm
+
+
+2. Verify Installation
+
+helm version
+
+Expected output (example):
+
+version.BuildInfo{Version:"v3.15.2", ...}
+
+
+
+Installation of the ELB Add On:
+
+Refer to: https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html

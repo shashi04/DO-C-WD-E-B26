@@ -1,0 +1,153 @@
+Amazon EKS (Elastic Kubernetes Service)
+========================================
+
+
+Amazon EKS (Elastic Kubernetes Service) simplifies Kubernetes deployment on AWS. eksctl is a command-line tool that automates cluster creation and management.
+
+
+Prerequisites
+==============
+
+Before proceeding, ensure the following are installed and configured on your machine:
+
+Install AWS CLI
+
+Link - https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+
+Verify installation:
+=====================
+
+aws --version
+
+
+Configure AWS credentials:
+==========================
+
+aws configure
+
+
+Enter your AWS Access Key, Secret Key, Region, and Output Format (json/yaml)
+
+=============================================================================================================================
+
+Install eksctl
+===============
+
+curl -LO "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz"
+tar -xzf eksctl_Linux_amd64.tar.gz
+sudo mv eksctl /usr/local/bin
+
+-> Verify installation:
+
+eksctl version
+
+=============================================================================================================================
+
+Install kubectl (Kubernetes CLI)
+=================================
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+
+-> Verify installation:
+
+kubectl version --client
+
+=============================================================================================================================
+
+Install AWS IAM Authenticator (Optional, if not installed automatically)
+==============================
+
+curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/aws-iam-authenticator
+
+(Replace 1.29.0 with your EKS cluster version if different.)
+
+-> Make It Executable:
+
+chmod +x ./aws-iam-authenticator
+
+-> Move to a System Path
+
+sudo mv ./aws-iam-authenticator /usr/local/bin
+
+
+-> Verify Installation:
+
+aws-iam-authenticator version
+
+If installed correctly, you should see output similar to:
+
+{"Version":"1.15.10", "Commit":"abcdef123456"}
+
+
+=============================================================================================================================
+
+Steps:
+======
+
+Step 1: Create an EKS Cluster Using eksctl
+===========================================
+
+-> Run the following command to create a simple EKS cluster with 1 node:
+
+eksctl create cluster --name my-cluster --region ap-south-1 --nodegroup-name my-nodes --node-type t3.medium --nodes 1
+
+
+Step 2: Verify Cluster Creation
+================================
+
+-> Cluster provisioning takes around 15–20 minutes. Once complete, verify using:
+
+eksctl get cluster --region ap-south-1
+
+
+Step 3: Update Kubeconfig
+==========================
+
+-> To interact with the EKS cluster using kubectl:
+
+aws eks update-kubeconfig --region ap-south-1 --name my-cluster
+
+
+Step 4: Validate Cluster Connection
+====================================
+
+kubectl get nodes
+
+If successful, it should display the nodes in the cluster.
+
+
+Step 5: Deploy a Sample Application (Optional)
+====================================
+
+To ensure everything is working fine, deploy an Nginx deployment:
+
+-> Create a deployment:
+
+kubectl create deployment nginx --image=nginx
+
+
+-> Expose the deployment:
+
+kubectl expose deployment nginx --type=LoadBalancer --port=80
+
+
+-> Verify service status:
+
+kubectl get svc
+
+
+Step 6: Deleting the EKS Cluster
+=================================
+
+If you no longer need the cluster, delete it to save costs:
+
+eksctl delete cluster --name my-cluster --region us-east-1
+
+
+
+
+
+
