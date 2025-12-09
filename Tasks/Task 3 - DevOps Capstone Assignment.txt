@@ -1,0 +1,291 @@
+DevOps Capstone Assignment
+============================
+
+Title: Deploy a Containerized Application to AWS EKS using Bash, Docker, GitHub & Kubernetes
+
+🎯 Objective
+==============
+
+Students will build, containerize, version-control, and deploy a sample application on AWS EKS using Linux, Bash scripting, GitHub, Docker, Kubernetes, and core AWS services.
+
+🧩 Technologies Covered
+=========================
+
+✔ Linux
+✔ Bash Scripting
+✔ GitHub
+✔ Docker
+✔ AWS (EC2, VPC, ELB, ASG, S3, ECR, EKS)
+✔ Kubernetes
+
+📌 Scenario
+=============
+
+You are a DevOps Engineer for a startup.
+Your team wants to deploy a containerized web application on Kubernetes (EKS) with proper automation, scalability, and security.
+
+
+📝 Task Breakdown
+===================
+
+Part 1: Linux & Bash (Infrastructure Preparation)
+==================================================
+
+Tasks:
+=======
+
+-> Launch an EC2 instance (Amazon Linux 2 or Ubuntu).
+
+-> Install required tools:
+
+- Docker
+
+- kubectl
+
+- awscli
+
+- git
+
+
+-> Write a Bash script (setup.sh) that:
+
+- Installs Docker
+
+- Installs AWS CLI
+
+- Installs kubectl
+
+- Validates all installations
+
+✅ Expected Output:
+
+Running ./setup.sh prepares the server completely.
+
+
+
+Part 2: GitHub (Source Control)
+================================
+
+Tasks:
+=======
+
+-> Create a GitHub repository named:
+
+devops-capstone-app
+
+
+-> Add the following:
+
+- Sample web app (Node.js / Python Flask / Nginx HTML)
+
+- Dockerfile
+
+- setup.sh
+
+- k8s/ folder (Kubernetes manifests)
+
+-> Follow Git best practices:
+
+- Meaningful commits
+
+- .gitignore
+
+
+✅ Evaluation: Git history & repo structure
+
+
+
+Part 3: Docker (Containerization)
+==================================
+
+Tasks:
+=======
+
+-> Create a Dockerfile for the application.
+
+-> Build the Docker image:
+
+docker build -t sample-app .
+
+
+-> Test locally:
+
+docker run -d -p 8080:80 sample-app
+
+
+✅ Expected Result: App accessible from browser.
+
+
+
+Part 4: AWS ECR (Image Registry)
+=================================
+
+Tasks:
+=======
+
+-> Create an ECR repository.
+
+-> Authenticate Docker to ECR.
+
+-> Tag and push the image:
+
+docker tag sample-app:latest <ECR_URI>:v1
+docker push <ECR_URI>:v1
+
+
+✅ Concepts Tested: Docker registry, IAM permissions
+
+
+
+Part 5: AWS Networking (VPC, ELB, ASG)
+=======================================
+
+Tasks:
+=======
+
+-> Create a VPC with:
+
+- Public subnets
+
+- NAT Gateway
+
+-> Create an EKS cluster:
+
+- Managed Node Group
+
+- Nodes deployed using Auto Scaling Group
+
+-> Ensure:
+
+- Worker nodes are in private subnets
+
+- Cluster uses AWS ELB for service exposure
+
+✅ Evaluation: Architecture understanding
+
+
+
+Part 6: Amazon EKS (Kubernetes Cluster)
+========================================
+
+Tasks:
+=======
+
+-> Configure kubeconfig:
+
+aws eks update-kubeconfig --region <region> --name <cluster-name>
+
+
+-> Validate:
+
+kubectl get nodes
+
+
+✅ Expected Output: Worker nodes in Ready state
+
+
+
+Part 7: Kubernetes (Deployment & Services)
+===========================================
+
+Tasks:
+=======
+
+-. Create Kubernetes manifests:
+
+📁 k8s/
+
+deployment.yaml
+
+service.yaml
+
+-> Requirements:
+
+- Deployment with:
+
+-- 2 replicas
+
+-- Image from ECR
+
+-> Service type:
+
+type: LoadBalancer
+
+
+-> Deploy:
+
+kubectl apply -f k8s/
+
+
+✅ Expected Result:
+Application accessible via AWS Load Balancer URL
+
+
+
+Part 8: Autoscaling (Kubernetes + AWS)
+=======================================
+
+Tasks:
+=======
+
+-> Configure Horizontal Pod Autoscaler:
+
+- Min: 2
+
+- Max: 5
+
+- CPU based scaling
+
+-> Validate scaling by generating load.
+
+✅ Concepts Tested: Scaling, High Availability
+
+
+
+Part 9: Logging & Storage (S3)
+===============================
+
+Tasks:
+=======
+
+-> Create an S3 bucket.
+
+-> Write a Bash script to:
+
+- Collect pod logs
+
+- Upload logs to S3
+
+-> Example:
+
+kubectl logs pod-name > app.log
+aws s3 cp app.log s3://bucket-name/
+
+
+✅ Outcome: Centralized log storage
+
+
+
+📂 Final Submission Checklist
+===============================
+
+Students must submit:
+======================
+
+✅ GitHub repository link
+
+✅ Architecture diagram
+
+✅ Bash script
+
+✅ Kubernetes manifests
+
+✅ Screenshots:
+
+- EKS nodes
+
+- Application URL
+
+- Docker image in ECR
+
+- Logs in S3
