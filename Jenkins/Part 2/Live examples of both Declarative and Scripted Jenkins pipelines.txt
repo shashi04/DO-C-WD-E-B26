@@ -1,0 +1,268 @@
+Live examples of both Declarative and Scripted Jenkins pipelines for a simple Python project 
+=============================================================================================
+
+The pipeline will:
+==================
+
+🔹 Checkout code from GitHub
+🔹 Set up Python environment
+🔹 Install dependencies (requirements.txt)
+🔹 Run tests (test_app.py)
+
+GitHub Repo URL: 
+=================
+
+https://github.com/shashi04/Python-Demo
+
+
+
+Step 1: Install Jenkins Plugins
+================================
+
+Ensure your Jenkins has the following plugins installed:
+
+🔹Pipeline
+🔹Git (for cloning repositories)
+🔹Workspace Cleanup (optional but good for clean builds)
+
+Step 2: Create a New Jenkins Pipeline Job
+==========================================
+
+1. Open Jenkins Dashboard → Click on New Item.
+
+2. Enter a name (e.g., Python-Demo-Pipeline).
+
+3. Select Pipeline → Click OK.
+
+4. Scroll down to Pipeline Section.
+
+5. Choose Pipeline script and paste the respective pipeline code.
+
+
+Declarative Pipeline Example
+=============================
+
+This is the recommended approach for most Jenkins pipelines.
+
+
+pipeline {
+    agent any
+
+    environment {
+        VIRTUAL_ENV = 'venv'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/shashi04/Python-Demo.git'
+            }
+        }
+
+        stage('Setup Python Environment') {
+            steps {
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh '''
+                . venv/bin/activate
+                pytest test_app.py
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+
+
+Explanation
+============
+
+1. Clones the GitHub repository into Jenkins workspace.
+2. Creates a Python virtual environment (venv).
+3. Activates venv and installs dependencies (pip install -r requirements.txt).
+4. Runs unit tests using pytest.
+5. Cleans up the workspace after execution.
+
+
+
+Why Use Declarative?
+=====================
+✅ Easier to read
+✅ Better structure with stages {}
+✅ Built-in post actions for cleanup & notifications
+
+===========================================================================================================================================================================
+
+Scripted Pipeline Example
+==========================
+
+This is more flexible but requires more Groovy scripting.
+
+
+node {
+    stage('Clone Repository') {
+        git branch: 'main', url: 'https://github.com/shashi04/Python-Demo.git'
+    }
+
+    stage('Setup Python Environment') {
+        sh '''
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        '''
+    }
+
+    stage('Run Tests') {
+        sh '''
+        . venv/bin/activate
+        pytest test_app.py
+        '''
+    }
+
+    stage('Cleanup') {
+        cleanWs()
+    }
+}
+
+
+Why Use Scripted?
+==================
+
+✅ More flexibility (custom logic, exception handling)
+✅ Useful for complex workflows
+
+===========================================================================================================================================================================
+Which One Should You Use?
+==========================
+
+🔹 Go with Declarative if your pipeline is straightforward and structured.
+🔹 Use Scripted when you need more control (e.g., looping, conditionals).
+
+
+Step 3: Run the Pipeline in Jenkins
+===================================
+
+1. Click Build Now in Jenkins.
+
+2. Check the Console Output to track progress.
+
+===========================================================================================================================================================================
+
+Store the Jenkins pipeline script as a Jenkinsfile in your GitHub repository, so Jenkins can automatically use it for builds 
+=============================================================================================================================
+
+Step-by-step guide on how to do this.
+
+
+Step 1: Create a Jenkinsfile
+============================
+
+1. Go to your local GitHub repo (Python-Demo) on your machine:
+
+git clone https://github.com/shashi04/Python-Demo.git
+cd Python-Demo
+
+2. Create a new file named Jenkinsfile:
+
+nano Jenkinsfile
+
+3. Edit the file and add the pipeline script (using Declarative Pipeline)
+
+
+pipeline {
+    agent any  
+
+    environment {
+        VIRTUAL_ENV = 'venv'  
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/shashi04/Python-Demo.git'
+            }
+        }
+
+        stage('Setup Python Environment') {
+            steps {
+                sh 'python3 -m venv $VIRTUAL_ENV'
+                sh 'source $VIRTUAL_ENV/bin/activate'
+                sh 'pip install --upgrade pip'
+                sh 'pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'source $VIRTUAL_ENV/bin/activate && pytest test_app.py'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up workspace...'
+            cleanWs()
+        }
+    }
+}
+
+
+4. Save and commit the file to the repository:
+
+git add Jenkinsfile
+git commit -m "Added Jenkinsfile for CI Pipeline"
+git push origin main
+
+
+Step 2: Configure Jenkins to Use the Jenkinsfile
+=================================================
+
+1. Open Jenkins → Click New Item.
+
+2. Enter a name (e.g., Python-Demo-Jenkinsfile).
+
+3. Select Pipeline → Click OK.
+
+4. Scroll down to Pipeline Section.
+
+5. Select "Pipeline script from SCM".
+
+6. In SCM, select Git.
+
+7. Enter your repository URL: 
+
+https://github.com/shashi04/Python-Demo.git
+
+8. In Branch Specifier, enter */main (or the branch name where Jenkinsfile is stored).
+
+9. In Script Path, enter Jenkinsfile (default).
+
+10. Click Save.
+
+
+Step 3: Trigger the Pipeline
+=============================
+
+1. Click Build Now in Jenkins.
+
+2. Jenkins will pull the Jenkinsfile and execute the steps.
+
+3. Monitor the Console Output for logs.
+
+

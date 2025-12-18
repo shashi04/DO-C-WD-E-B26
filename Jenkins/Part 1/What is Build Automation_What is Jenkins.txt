@@ -1,0 +1,35 @@
+What is Build Automation?
+==========================
+
+Build automation is the process of automating the creation of software builds, including compiling source code, packaging binaries, running tests, and deploying applications. It eliminates manual effort, reduces errors, and speeds up software development.
+
+Key Benefits of Build Automation:
+=================================
+-> Consistency & Reliability: Reduces human errors and ensures uniform builds.
+-> Faster Development: Speeds up the process by automating repetitive tasks.
+-> Continuous Integration (CI): Helps in integrating code changes frequently.
+-> Better Testing: Automated testing ensures stability before deployment.
+-> Scalability: Supports large teams and complex projects efficiently.
+
+
+What is Jenkins?
+=================
+
+Jenkins is an open-source automation server used for continuous integration (CI) and continuous delivery (CD). It helps developers automate software builds, testing, and deployments.
+
+Key Features of Jenkins:
+========================
+-> Extensibility: Supports plugins for integration with various tools.
+-> Distributed Builds: Runs tasks on multiple nodes for faster execution.
+-> Pipeline as Code: Defines workflows using scripts (e.g., Groovy-based Jenkinsfile).
+-> Integration Support: Works with Git, Docker, Kubernetes, Ansible, etc.
+-> Web UI & CLI: Provides an easy-to-use interface for monitoring jobs.
+
+How Jenkins Works?
+===================
+
+1. Developers commit code to a repository (e.g., GitHub, GitLab, Bitbucket).
+2. Jenkins fetches the code and triggers a build.
+3. Tests run automatically (unit, integration, functional tests).
+4. Artifacts are created (JARs, Docker images, etc.).
+5. Deployment is triggered to servers or cloud environments.

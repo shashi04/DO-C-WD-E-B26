@@ -1,0 +1,174 @@
+Writing and Executing Groovy Scripts in Jenkins
+================================================
+
+What is Groovy?
+================
+
+🔹 Groovy is a powerful, yet simple scripting language that runs on the Java platform. It is designed to be easy to learn, flexible, and enhance productivity by reducing the amount of code needed compared to Java.
+
+🔹 It is widely used in Jenkins for automation, scripting, and pipeline creation.
+
+Why Use Groovy?
+================
+
+🔹 Easy to Learn – If you know Java, Groovy will feel very familiar.
+🔹 Less Code, More Power – Groovy allows you to write shorter and more readable scripts than Java.
+🔹 Works with Java – You can use existing Java code and libraries in Groovy.
+🔹 Great for Automation – Used in tools like Jenkins, Gradle, and scripting tasks.
+
+
+Where Can You Use Groovy in Jenkins?
+=====================================
+
+Jenkins provides multiple places to execute Groovy scripts:
+
+🔹 Script Console – Run Groovy scripts manually in Jenkins.
+🔹 Pipeline Scripts – Use Groovy in Jenkins Pipelines (Declarative & Scripted).
+🔹 Jenkinsfile – Write Groovy scripts to define CI/CD pipelines.
+🔹 Manage Jenkins → Script Console – Execute administrative scripts for Jenkins management.
+
+===========================================================================================================================================================================
+
+Live Examples and Step-by-Step Process
+=======================================
+
+Running Groovy Script from the Jenkins Script Console
+======================================================
+
+The Jenkins Script Console allows you to run Groovy commands directly on the Jenkins server.
+
+Steps to Execute a Script in Script Console:
+=============================================
+
+1. Open Jenkins and log in.
+
+2. Go to Manage Jenkins → Script Console.
+
+3. In the provided text box, enter the following Groovy script:
+
+println "Hello, Jenkins! Groovy script is running."
+
+4. Click Run to execute the script.
+
+5. The output will be displayed below the script box.
+
+Example: 
+=========
+
+🔹 Fetch all Jenkins jobs and print their names
+
+Jenkins.instance.getAllItems(Job.class).each { job ->
+    println job.getFullName()
+}
+
+
+- This script lists all the jobs available in Jenkins.
+
+===========================================================================================================================================================================
+
+Using Groovy in a Jenkins Pipeline
+===================================
+
+Groovy scripts are also used in Jenkins Pipelines to automate builds and deployments.
+
+Steps to Create a Pipeline with Groovy
+=======================================
+
+1. Open Jenkins and go to New Item → Pipeline.
+
+2. Enter a name (e.g., MyGroovyPipeline) and click OK.
+
+3. Scroll down to Pipeline → Select Pipeline script.
+
+4. Enter the following Groovy script:
+
+pipeline {
+    agent any
+    stages {
+        stage('Hello') {
+            steps {
+                script {
+                    println "Hello, this is a Groovy script inside a Jenkins pipeline."
+                }
+            }
+        }
+    }
+}
+
+
+5. Click Save and then Build Now.
+
+6. Check the Console Output to see the message printed.
+
+===========================================================================================================================================================================
+
+Creating a Jenkinsfile with Groovy
+===================================
+
+A Jenkinsfile is a script file written in Groovy that defines a Jenkins pipeline.
+
+
+Steps to Use a Jenkinsfile:
+============================
+
+1. Create a new file named Jenkinsfile in your project repository.
+
+2. Add the following Groovy code:
+
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building the project...'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the application...'
+            }
+        }
+    }
+}
+
+
+3. Save and push this file to your Git repository.
+
+4. In Jenkins, create a new Pipeline Job and configure it to use the Jenkinsfile.
+
+5. Click Build Now to execute the pipeline.
+
+===========================================================================================================================================================================
+
+Managing Jenkins with Groovy Scripts
+=====================================
+
+You can use Groovy scripts for Jenkins administration tasks, such as creating users, managing jobs, and modifying configurations.
+
+Example: 
+========
+
+-> Get All Plugins Installed in Jenkins
+
+Jenkins.instance.pluginManager.plugins.each { plugin ->
+    println "${plugin.getShortName()} (${plugin.getVersion()})"
+}
+
+
+This script prints all installed plugins and their versions.
+
+===========================================================================================================================================================================
+
+Conclusion
+===========
+
+🔹 Groovy is the primary scripting language in Jenkins.
+
+🔹 You can run Groovy scripts in Script Console, Pipelines, and Jenkinsfiles.
+
+🔹 Groovy helps automate Jenkins jobs, manage configurations, and extend Jenkins functionality.

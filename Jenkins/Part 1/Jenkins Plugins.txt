@@ -1,0 +1,56 @@
+Jenkins Plugins
+================
+
+Jenkins plugins extend the functionality of Jenkins by adding features like integration with cloud providers, build tools, notifications, security enhancements, and more.
+
+
+Common Categories of Jenkins Plugins
+====================================
+
+1. Source Code Management (SCM)
+
+-> Git Plugin – Integrates Jenkins with Git repositories.
+-> GitHub Plugin – Provides webhooks and build triggers for GitHub repositories.
+-> Bitbucket Plugin – Supports Bitbucket repository integration.
+
+2. Build Tools
+
+-> Pipeline Plugin – Enables declarative and scripted pipeline support.
+-> Maven Integration Plugin – Allows Jenkins to build and test Maven projects.
+-> Gradle Plugin – Adds support for Gradle builds.
+
+3. Continuous Deployment & Delivery
+
+-> Deploy to Container Plugin – Deploys artifacts to application servers (Tomcat, JBoss, etc.).
+-> Kubernetes Plugin – Supports running Jenkins agents on Kubernetes.
+-> AWS CodeDeploy Plugin – Automates deployments on AWS.
+
+4. Notifications & Reporting
+
+-> Email Extension Plugin – Enhances email notifications.
+-> Slack Plugin – Sends build notifications to Slack.
+-> New Relic Plugin – Integrates with New Relic for performance monitoring.
+
+5. Security & Authentication
+
+-> Role-Based Authorization Strategy Plugin – Provides fine-grained access control.
+-> LDAP Plugin – Allows authentication using an LDAP directory.
+-> SAML Plugin – Enables Single Sign-On (SSO) with SAML providers.
+
+6. Infrastructure & Cloud Integration
+
+-> Azure VM Agents Plugin – Provisions Jenkins agents on Azure.
+-> Amazon EC2 Plugin – Launches Jenkins agents on AWS EC2.
+-> Google Kubernetes Engine Plugin – Manages Jenkins workloads on GKE.
+
+7. Testing & Code Quality
+
+-> JUnit Plugin – Displays test results from JUnit.
+-> SonarQube Plugin – Integrates with SonarQube for code analysis.
+-> Cucumber Reports Plugin – Generates reports for Cucumber test results.
+
+8. Utility Plugins
+
+-> Job DSL Plugin – Allows defining Jenkins jobs as code.
+-> Build Timeout Plugin – Automatically stops long-running builds.
+-> Credentials Binding Plugin – Manages secure credentials in pipelines.

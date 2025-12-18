@@ -1,0 +1,213 @@
+Docker with Jenkins
+====================
+
+Step-by-step process to build a Docker image in Jenkins, make Docker commands available, and push it to your DockerHub repository.
+
+
+Step 1: Install Docker on Jenkins Server
+=========================================
+
+Since you have Jenkins installed on an Ubuntu VM, you need to ensure Docker is installed and Jenkins can access it.
+
+Install Docker:
+===============
+
+sudo apt update
+sudo apt install -y docker.io
+
+
+Enable and Start Docker:
+========================
+
+sudo systemctl enable docker
+sudo systemctl start docker
+
+
+Add Jenkins to the Docker Group (Allows Jenkins to Run Docker Commands)
+========================================================================
+
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+
+
+Verify Docker is Working:
+==========================
+
+docker --version
+docker ps
+
+
+
+Step 2: Store DockerHub Credentials in Jenkins
+===============================================
+
+1. Go to Jenkins Dashboard → Manage Jenkins → Manage Credentials.
+
+2. Click on (global) → Add Credentials.
+
+3. Select Username and Password:
+Username: shashivar04
+Password: Your DockerHub password
+ID: dockerhub_credentials (You’ll use this ID in the pipeline).
+
+
+Step 3: Create a Simple Python Application
+===========================================
+
+Save this as app.py in your GitHub repo:
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Hello, Dockerized World!"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+Create a requirements.txt file:
+===============================
+
+flask
+
+
+Create a Dockerfile:
+====================
+
+# Use official Python runtime as a parent image
+FROM python:3.9
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the current directory contents into the container
+COPY . .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make port 5000 available to the outside world
+EXPOSE 5000
+
+# Run the application
+CMD ["python", "app.py"]
+
+
+Step 4: Create a Jenkins Pipeline to Build and Push Docker Image
+=================================================================
+
+In Jenkins, create a Pipeline Job and use the following Jenkinsfile:
+
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "shashivar04/jenkins-demo:latest"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/shashi04/jenkins-dockerImage.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${IMAGE_NAME} ."
+                }
+            }
+        }
+
+        stage('Login to DockerHub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                    }
+                }
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                script {
+                    sh "docker push ${IMAGE_NAME}"
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    sh "docker rmi ${IMAGE_NAME}"
+                }
+            }
+        }
+    }
+}
+
+
+Step 5: Configure the Jenkins Job
+==================================
+
+1. Go to Jenkins Dashboard → New Item → Pipeline.
+
+Name it Docker-Build-Pipeline.
+
+2. Under Pipeline Definition, choose Pipeline script from SCM.
+
+SCM: Git.
+Repository URL: https://github.com/shashi04/jenkins-dockerImage.git.
+Branch: main.
+Script Path: Jenkinsfile.
+
+3. Click Save and then Build Now.
+
+Step 6: Verify the Image in DockerHub
+======================================
+
+Once the pipeline runs successfully, go to DockerHub → shashivar04/jenkins-demo, and you should see the pushed image.
+
+===========================================================================================================================================================================
+
+Checklist Before Running the Pipeline
+======================================
+
+Ensure Jenkins Can Run Docker Commands:
+========================================
+
+Run docker ps on the Jenkins machine using the jenkins user to verify it has Docker permissions.
+
+If needed, add Jenkins to the Docker group:
+
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+
+Verify Jenkins Credentials:
+============================
+
+-> In Manage Jenkins → Manage Credentials, ensure that:
+
+-> The ID for your DockerHub credentials is dockerhub-credentials (matches the pipeline).
+
+-> You have stored your DockerHub username and password/token correctly.
+
+Check DockerHub Repository:
+============================
+
+-> Ensure that shashivar04/python-app exists in DockerHub, or create it manually before pushing.
+
+Confirm GitHub Repository Access:
+==================================
+
+-> The repo https://github.com/shashi04/jenkins-dockerImage should be accessible by Jenkins.
+
+-> If the repo is private, add SSH keys or personal access tokens for Jenkins.
+
+
+

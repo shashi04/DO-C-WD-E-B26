@@ -1,0 +1,88 @@
+pipeline {
+  agent any
+
+  environment {
+    AWS_REGION    = ''
+    AWS_ACCOUNT   = ''
+    ECR_REGISTRY  = "${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+    ECR_REPO      = ""
+    IMAGE_TAG     = "${BUILD_NUMBER}"
+    IMAGE_URI     = "${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
+
+    APP_NAME      = ""
+    APP_PORT      = ""
+
+    // ✅ Correct path inside the source repo
+    APP_DIR       = "source/AI-Deployable/legal-search-engine"
+
+    ENV_FILE      = "/home/ubuntu/config/app.env"
+    TARGET_SERVER = ""
+  }
+
+  stages {
+
+    stage('Checkout Source Repo (LawEdCue-AI-DATA)') {
+      steps {
+        dir("source") {
+          git(
+            url: '',
+            credentialsId: 'gitlab-ssh-key',
+            branch: 'Dev'
+          )
+        }
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        dir("${APP_DIR}") {
+          sh """
+            docker build -t ${ECR_REPO}:${IMAGE_TAG} .
+            docker tag ${ECR_REPO}:${IMAGE_TAG} ${IMAGE_URI}
+          """
+        }
+      }
+    }
+
+    stage('Push to ECR') {
+      steps {
+        sh """
+          aws ecr get-login-password --region ${AWS_REGION} \
+            | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+
+          aws ecr describe-repositories --repository-names ${ECR_REPO} --region ${AWS_REGION} \
+            || aws ecr create-repository --repository-name ${ECR_REPO} --region ${AWS_REGION}
+
+          docker push ${IMAGE_URI}
+        """
+      }
+    }
+
+    stage('Deploy on Private EC2') {
+      steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'private-ec2-key',
+                                          keyFileVariable: 'SSH_KEY',
+                                          usernameVariable: 'SSH_USER')]) {
+
+          sh """
+            ssh -o StrictHostKeyChecking=no -i $SSH_KEY $SSH_USER@${TARGET_SERVER} '
+              aws ecr get-login-password --region ${AWS_REGION} |
+              docker login --username AWS --password-stdin ${ECR_REGISTRY};
+
+              docker pull ${IMAGE_URI};
+
+              docker stop ${APP_NAME} || true;
+              docker rm ${APP_NAME} || true;
+
+              docker run -d --restart unless-stopped \
+                --env-file ${ENV_FILE} \
+                -p ${APP_PORT}:${APP_PORT} \
+                --name ${APP_NAME} \
+                ${IMAGE_URI};
+            '
+          """
+        }
+      }
+    }
+  }
+}

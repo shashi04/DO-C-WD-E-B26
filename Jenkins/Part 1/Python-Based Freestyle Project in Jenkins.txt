@@ -1,0 +1,130 @@
+Python-Based Freestyle Project in Jenkins
+==========================================
+
+
+Step-by-step guide to setting up a Python-based Freestyle Project in Jenkins.
+
+
+Step 1: Install Required Dependencies on Jenkins Server
+========================================================
+
+Before setting up Jenkins, ensure your Ubuntu VM has Python installed:
+
+-> SSH into your Ubuntu VM where Jenkins is installed.
+
+-> Update packages and install dependencies:
+
+sudo apt update && sudo apt install -y python3 python3-pip python3-venv git
+
+
+Verify installations:
+=====================
+
+python3 --version
+pip3 --version
+git --version
+
+
+Step 2: Create a Python Project (If Not Already Available)
+===========================================================
+
+If you don't have a repository, create a simple Python project:
+
+-> Create a directory for your project:
+
+mkdir my_python_project && cd my_python_project
+
+
+-> Add a simple Python script (app.py):
+
+def hello():
+    return "Hello, Jenkins!"
+
+if __name__ == "__main__":
+    print(hello())
+
+
+-> Add a unit test (test_app.py):
+
+import unittest
+from app import hello
+
+class TestApp(unittest.TestCase):
+    def test_hello(self):
+        self.assertEqual(hello(), "Hello, Jenkins!")
+
+if __name__ == "__main__":
+    unittest.main()
+
+
+-> Add a requirements.txt file:
+
+pytest
+
+
+-> Push your project to a Git repository (e.g., GitHub, GitLab, Bitbucket):
+
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin <your_repo_url>
+git push -u origin main
+
+
+Step 3: Configure Jenkins Freestyle Job
+========================================
+
+-> Login to Jenkins (http://<your_jenkins_server>:8080).
+-> Click on New Item.
+-> Enter a job name (e.g., Python-Freestyle-Job).
+-> Select Freestyle project and click OK.
+
+Step 4: Configure Source Code Management (SCM)
+==============================================
+
+-> Scroll to the Source Code Management section.
+-> Select Git.
+-> Enter your repository URL (e.g., https://github.com/user/my_python_project.git).
+-> Click Add Credentials if authentication is required.
+-> Set the branch to main or another branch you’re using.
+
+Step 5: Add Build Steps
+========================
+
+-> Scroll down to the Build section.
+-> Click Add build step → Execute Shell.
+
+Enter the following script to set up a virtual environment and run tests:
+
+#!/bin/bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python3 -m unittest discover
+
+
+Step 6: Save and Build
+=======================
+
+-> Click Save.
+-> Click Build Now to trigger the job.
+-> Go to Console Output to verify that:
+-> The repository is cloned.
+-> The virtual environment is created.
+-> Dependencies are installed.
+-> Tests are executed.
+
+Step 7: Troubleshooting
+========================
+
+-> If the job fails, check the Console Output.
+-> If source venv/bin/activate fails, try . venv/bin/activate.
+-> If dependencies don’t install, ensure requirements.txt exists and has valid packages.
+
+
+
+
+
+
+
+

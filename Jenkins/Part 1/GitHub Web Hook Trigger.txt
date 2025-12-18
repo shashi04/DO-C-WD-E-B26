@@ -1,0 +1,56 @@
+GitHub Web Hook Trigger
+========================
+
+
+Step 1: Install the Required GitHub Plugin
+===========================================
+
+-> Open Jenkins Dashboard (http://<your-jenkins-server>:8080).
+-> Go to Manage Jenkins → Manage Plugins.
+-> Click on the Available tab and search for:
+   - GitHub Plugin  
+   - GitHub Branch Source Plugin
+-> Select them and click Install Without Restart.
+-> After installation, restart Jenkins.
+
+Step 2: Enable GitHub Webhook Support
+======================================
+
+-> Go to Manage Jenkins → Configure System.
+-> Scroll down to GitHub.
+-> Click Add GitHub Server → Select GitHub Server.
+-> Click Manage Hooks and ensure it's enabled.
+-> Click Save.
+
+Step 3: Enable Webhooks in Your Jenkins Job
+============================================
+
+-> Open your Jenkins Freestyle Job.
+-> Scroll down to Build Triggers.
+-> Check the option "GitHub hook trigger for GITScm polling".
+-> Click Save.
+
+Step 4: Configure Webhook in GitHub
+====================================
+
+-> Open your GitHub repository.
+-> Go to Settings → Webhooks.
+-> Click Add Webhook and enter:
+
+Payload URL: http://<your-jenkins-server>:8080/github-webhook/
+
+Content Type: application/json
+
+Trigger Events: Select Just the push event.
+
+-> Click Add Webhook.
+
+Step 5: Test the Webhook
+=========================
+
+-> Push a commit to your repository.
+-> Check if Jenkins starts a build automatically.
+-> If not, go to GitHub Webhooks → Click on the latest webhook delivery.
+-> Look for errors and adjust the URL or credentials if needed.
+
+Now, your Jenkins job should trigger automatically on new code commits!

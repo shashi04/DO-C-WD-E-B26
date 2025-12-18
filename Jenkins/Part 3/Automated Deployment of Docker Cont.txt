@@ -1,0 +1,111 @@
+Automated Deployment of Docker Container from Jenkins to EC2 (Ubuntu)
+======================================================================
+
+
+GitHub Repo Link: https://github.com/shashi04/jenkins-dockerImage
+
+
+Step 1: Set Up SSH Authentication (Manual - One-time Step)
+===========================================================
+
+Jenkins needs to SSH into the target EC2 instance to deploy the container.
+
+On the Jenkins EC2 Instance
+
+1. Generate an SSH Key (if not already created):
+=================================================
+
+ssh-keygen -t rsa -b 4096 -f ~/.ssh/jenkins-ec2-key -N ""
+
+
+This will generate two files:
+
+~/.ssh/jenkins-ec2-key (private key)
+
+~/.ssh/jenkins-ec2-key.pub (public key)
+
+2. Copy the Public Key to the Target EC2 Instance
+==================================================
+
+On the Master (Jenkins VM)
+===========================
+
+1. Copy the key manually:
+
+cat ~/.ssh/id_rsa.pub
+
+Copy the output.
+
+
+2. On the Target EC2
+
+nano ~/.ssh/authorized_keys
+
+Paste the public key here, save
+
+Set correct permissions:
+=========================
+
+chmod 600 ~/.ssh/authorized_keys
+
+==============================================================================================================================================================
+
+Step 2: Install Docker on Target EC2 Instance
+==============================================
+
+Run these commands on the target EC2 instance:
+
+sudo apt update -y
+sudo apt install -y docker.io
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker ubuntu
+
+==============================================================================================================================================================
+
+Step 3: Modify the Jenkinsfile for Deployment
+==============================================
+
+Your Jenkinsfile should:
+
+-> Build and push the Docker image to Docker Hub.
+-> SSH into the target EC2 instance.
+-> Pull the latest image and restart the container.
+
+Refer to the GitHub for the files. (Link provided above)
+
+==============================================================================================================================================================
+
+Step 4: Configure Jenkins Credentials
+======================================
+
+1. Go to Jenkins Dashboard → Manage Jenkins → Manage Credentials → Global credentials.
+
+Add:
+
+1. Docker Hub Credentials (docker-hub-credentials):
+    Type: Username and Password
+    ID: docker-hub-credentials
+
+2. EC2 SSH Key (ec2-ssh-credentials):
+    Type: SSH Username with Private Key 
+    Username: ubuntu
+    Private Key: Paste contents of ~/.ssh/jenkins-ec2-key.
+
+==============================================================================================================================================================
+
+Step 5: Run the Jenkins Job
+============================
+
+-> Commit and push the Jenkinsfile to your repository.
+-> Create a new Jenkins Pipeline job.
+-> Set the repository URL and trigger a build.
+
+
+Jenkins will:
+
+-> Build the image.
+-> Push it to Docker Hub.
+-> SSH into the target EC2 instance.
+-> Pull and restart the container automatically.
+

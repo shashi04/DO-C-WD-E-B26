@@ -1,0 +1,98 @@
+Jenkins Pipeline Syntax (Declarative vs. Scripted)
+===================================================
+
+
+Jenkins pipelines can be written in two different syntaxes: Declarative and Scripted. Each has its own use case, flexibility, and complexity level.
+
+
+Declarative Pipeline
+=====================
+
+🔹 Introduced in Jenkins 2.0 to simplify pipeline creation.
+🔹 Uses a structured syntax with predefined sections like pipeline, stages, and steps.
+🔹 Easier to read and maintain.
+🔹 Recommended for most use cases.
+
+Example of a Declarative Pipeline
+==================================
+
+pipeline {
+    agent any  // Runs on any available agent
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+            }
+        }
+    }
+}
+
+Key Features of Declarative Pipeline
+=====================================
+
+🔹 Uses pipeline {} as the main block.
+
+🔹 Uses stages {} and stage {} to define different stages.
+
+🔹 steps {} contains actual commands or scripts.
+
+🔹 Supports built-in post-processing with post {} for success, failure, etc.
+
+===========================================================================================================================================================================
+
+Scripted Pipeline
+==================
+
+🔹 More powerful but complex, as it is fully Groovy-based.
+
+🔹 Allows complete flexibility to control pipeline execution.
+
+🔹 Useful for advanced use cases like looping, conditional execution, or shared libraries.
+
+
+Example of a Scripted Pipeline
+===============================
+
+node {
+    stage('Build') {
+        echo 'Building...'
+    }
+
+    stage('Test') {
+        echo 'Testing...'
+    }
+
+    stage('Deploy') {
+        echo 'Deploying...'
+    }
+}
+
+
+Key Features of Scripted Pipeline
+==================================
+
+🔹 Uses node {} instead of pipeline {}.
+
+🔹 More flexible, allowing conditional logic, loops, and error handling.
+
+🔹 Can define variables and complex logic directly in Groovy.
+
+===========================================================================================================================================================================
+
+Which One to Use?
+==================
+
+🔹 Use Declarative when you need a simple, structured, and maintainable pipeline.
+
+🔹 Use Scripted when you need complex logic, custom Groovy scripting, or advanced control.

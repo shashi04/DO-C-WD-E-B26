@@ -1,0 +1,131 @@
+Setup Jenkins Slave on EC2
+===========================
+
+Step 1: Setup Jenkins Slave on EC2
+===================================
+
+Launch an EC2 instance to act as the Jenkins Slave.
+
+1. Update System & Install OpenJDK
+
+sudo apt update && sudo apt upgrade -y
+sudo apt install openjdk-17-jdk -y
+java -version
+
+
+2. Create a Jenkins User
+
+sudo useradd -m -s /bin/bash jenkins
+sudo passwd jenkins  # Set a password for the Jenkins user
+
+
+3. Allow Jenkins User to Run Commands Without a Password
+
+echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/jenkins
+
+==============================================================================================================================================================
+
+Step 2: Configure SSH Key for Secure Connection
+================================================
+
+1. Generate SSH Key on Jenkins Master
+
+Switch to the Jenkins user:
+
+sudo su - Jenkins
+
+ssh-keygen -t rsa -b 4096
+
+Press Enter to accept the default location (/var/lib/jenkins/.ssh/id_rsa).
+
+
+2. Manually Copy the Public Key
+
+Since ssh-copy-id might not work due to permission issues, try this manual method:
+
+On the Master (Jenkins VM)
+===========================
+
+Copy the key manually:
+
+cat ~/.ssh/id_rsa.pub
+
+Copy the output.
+
+
+3. On the Slave	
+
+Once logged in, run:
+
+sudo su - Jenkins
+
+
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+nano ~/.ssh/authorized_keys
+
+Paste the public key here, save (Ctrl+X, then Y, then Enter). (Copied from the Master)
+
+
+Set correct permissions:
+=========================
+
+chmod 600 ~/.ssh/authorized_keys
+
+=============================================================================================================================================================
+
+Step 3: Test SSH Key Login
+==========================
+
+Now, go back to the master and try logging in without a password:
+
+ssh jenkins@<SLAVE_PRIVATE_IP>
+
+If this works, your SSH key authentication is now set up correctly.
+
+=============================================================================================================================================================
+
+Step 4: (Optional) Disable Password Authentication
+===================================================
+
+For security, disable password authentication again on the slave:
+
+sudo nano /etc/ssh/sshd_config
+
+
+Set:
+=====
+PasswordAuthentication no
+
+
+Restart SSH:
+=============
+sudo systemctl restart ssh
+
+==============================================================================================================================================================
+
+Step 5: Configure Jenkins to Use the Slave
+===========================================
+
+1. Go to Jenkins Dashboard → Manage Jenkins → Nodes → New Node
+
+2. Enter a Node Name, select Permanent Agent, and click OK.
+
+3. Set Remote Work Directory: /home/jenkins
+
+4. Launch Method: Choose Launch agent via SSH.
+
+5. Enter Slave SSH Details:
+
+6. Host: <SLAVE_IP>
+
+7. Credentials: Click Add → Choose SSH Username with Private Key
+
+8. Username: jenkins
+
+9. Private Key: Select Enter directly → Copy the content of /var/lib/jenkins/.ssh/id_rsa from Master. (sudo cat /var/lib/jenkins/.ssh/id_rsa)
+
+10. Click Save and then Launch Agent.
+
+
+

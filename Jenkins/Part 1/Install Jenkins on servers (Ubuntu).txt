@@ -1,0 +1,77 @@
+Install Jenkins on servers (Ubuntu OS)
+=======================================
+
+To install Jenkins on an Ubuntu VM, follow these steps:
+
+Step 1: Update the System
+==========================
+
+sudo apt update && sudo apt upgrade -y
+
+
+Step 2: Install Java
+====================
+
+-> Jenkins requires Java. Install OpenJDK 17:
+
+sudo apt install openjdk-17-jdk -y
+
+
+Verify the installation:
+========================
+
+java -version
+
+Step 3: Add Jenkins Repository & Install Jenkins
+================================================
+
+-> Add the repository key:
+
+curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+
+-> Add the Jenkins repository:
+
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian binary/" | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+
+-> Update packages and install Jenkins:
+
+sudo apt update
+sudo apt install -y jenkins
+
+
+Step 4: Start and Enable Jenkins
+================================
+
+sudo systemctl start jenkins
+sudo systemctl enable Jenkins
+
+Check status:
+=============
+
+sudo systemctl status Jenkins
+
+Step 5: Setup Jenkins
+=====================
+
+-> Access Jenkins in a browser
+
+http://<server-ip>:8080
+
+-> Retrieve the initial admin password:
+
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+-> Copy and paste the password into the Jenkins setup page.
+
+-> Follow the setup wizard, install recommended plugins, and create an admin user.
+
+
+
+
+
+
