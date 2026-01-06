@@ -1,0 +1,305 @@
+DevOps End-to-End Hands-On Task
+================================
+
+Project Title
+==============
+Automated Cloud-Native Application Deployment on AWS
+
+Objective
+=========
+Students will design, build, automate, and deploy a containerized web application on AWS using industry-standard DevOps tools. The goal is to simulate a real production DevOps workflow covering infrastructure provisioning, configuration management, CI/CD, containerization, orchestration, and automation.
+
+Technologies to Be Used
+========================
+
+1. Linux
+
+2. Bash
+
+3. AWS (EC2, Load Balancer, Auto Scaling Group, S3, VPC, Lambda)
+
+4. GitHub
+
+5. Docker
+
+6. Kubernetes (EKS)
+
+7. Jenkins
+
+8. Terraform
+
+10. Ansible
+
+
+Scenario
+==========
+
+You are a DevOps Engineer for an organization deploying a web application. The application must be:
+
+-> Highly available
+-> Scalable
+-> Automated from code commit to deployment
+-> Secure and production-ready
+
+
+Task Breakdown
+===============
+
+Phase 1: Linux & Bash (Server Preparation)
+===========================================
+
+Tasks
+=====
+
+-> Launch an Amazon EC2 (Ubuntu) instance.
+
+-> Perform the following using Linux commands:
+
+Create a non-root user
+
+Configure SSH access
+
+Install Docker, Git, Java, and Kubernetes CLI tools
+
+-> Write a Bash script to:
+
+Install Docker
+
+Start and enable Docker service
+
+Add the user to the Docker group
+
+Deliverables
+=============
+
+Bash script (setup.sh)
+
+Output logs showing successful installation
+
+
+
+Phase 2: GitHub (Source Code Management)
+=========================================
+
+Tasks
+=======
+
+-> Create a GitHub repository.
+
+-> Push a sample application (Node.js / Python / Java – choice of student).
+
+-> Maintain proper:
+
+Branching strategy (main, dev)
+
+Commit messages
+
+Add a README.md explaining the project.
+
+Deliverables
+=============
+GitHub repository link
+
+Commit history
+
+
+
+Phase 3: Docker (Containerization)
+===================================
+
+Tasks
+======
+
+-> Write a Dockerfile to containerize the application.
+
+-> Build the Docker image locally.
+
+-> Test the container using docker run.
+
+-> Tag the image properly.
+
+Deliverables
+=============
+
+Dockerfile
+
+Docker image build output
+
+Running container screenshot/log
+
+Phase 4: Terraform (Infrastructure as Code)
+============================================
+
+Tasks
+======
+
+-> Using Terraform, provision the following AWS resources:
+
+-> VPC with:
+
+Public and private subnets
+
+Internet Gateway
+
+-> EC2 instance for:
+
+Jenkins server
+
+Application Load Balancer (ALB)
+
+Auto Scaling Group (ASG)
+
+-> S3 bucket for:
+
+Terraform remote state or application artifacts
+
+IAM roles and security groups
+
+Deliverables
+=============
+
+Terraform files:
+
+main.tf
+
+variables.tf
+
+outputs.tf
+
+terraform apply output
+
+
+
+Phase 5: Ansible (Configuration Management)
+=============================================
+
+Tasks
+======
+
+-> Use Ansible to configure EC2 instances:
+
+Install Docker
+
+Install Kubernetes tools
+
+Configure application runtime
+
+-> Use Ansible inventory and playbooks.
+
+Deliverables
+=============
+
+Ansible playbook (site.yml)
+
+Inventory file
+
+Playbook execution output
+
+
+
+Phase 6: Jenkins (CI/CD Pipeline)
+==================================
+
+Tasks
+======
+
+-> Install Jenkins on EC2.
+
+-> Configure Jenkins:
+
+GitHub webhook
+
+Credentials
+
+Create a Jenkins pipeline to:
+
+Pull code from GitHub
+
+Build Docker image
+
+Push Docker image (ECR or Docker Hub)
+
+Trigger Kubernetes deployment
+
+Deliverables
+=============
+
+Jenkinsfile
+
+Pipeline execution screenshots
+
+Jenkins job configuration
+
+
+
+Phase 7: Kubernetes (EKS)
+==========================
+
+Tasks
+======
+
+-> Create an EKS cluster using Terraform.
+
+-> Deploy the application to Kubernetes:
+
+Deployment
+
+Service
+
+Ingress (ALB Ingress Controller)
+
+-> Verify:
+
+Pods are running
+
+Application is accessible via Load Balancer
+
+Deliverables
+=============
+
+Kubernetes YAML files
+
+kubectl get pods output
+
+Application URL
+
+
+
+Phase 8: AWS Lambda (Automation Task)
+======================================
+
+Tasks
+======
+
+-> Create a Lambda function to:
+
+-> Stop EC2 instances during non-business hours
+
+-> Or clean unused Docker images in ECR
+
+-> Trigger Lambda using:
+
+EventBridge (scheduled event)
+
+Deliverables
+=============
+
+Lambda code
+
+Trigger configuration screenshot
+
+Execution logs
+
+
+Final Validation
+=================
+
+-> Application accessible via Load Balancer
+
+-> CI/CD pipeline working end-to-end
+
+-> Infrastructure created using Terraform
+
+-> Configuration handled via Ansible
+
+-> Containers running in EKS
