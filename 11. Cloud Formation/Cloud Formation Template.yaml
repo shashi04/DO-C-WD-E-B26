@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: "2010-09-09" # Optional, specifies the template version
+Description: "Template description"    # Optional, a brief explanation of the template
+
+Metadata:                               # Optional, stores additional data about the template
+  Key: Value
+
+
+Parameters:                             # Optional, input values for customizing template behavior
+  ParameterName:
+    Type: String
+    Default: "DefaultValue"
+    Description: "Parameter description"
+    AllowedValues:
+      - Value1
+      - Value2
+
+Mappings:                               # Optional, a way to create static, key-value maps
+  MappingName:
+    Key:
+      SubKey: "Value"
+
+Conditions:                             # Optional, defines conditional resource creation
+  ConditionName: Fn::Equals [ParameterValue, "Value"]
+
+Resources:                              # Required, declares the AWS resources to create
+  LogicalResourceName:
+    Type: "AWS::Service::ResourceType"
+    Properties:
+      PropertyName: "PropertyValue"
+
+Outputs:                                # Optional, declares outputs to export data
+  OutputName:
+    Description: "Output description"
+    Value: !Ref LogicalResourceName
+    Export:
+      Name: "ExportName"

@@ -1,0 +1,122 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Create EC2 instance with Auto Scaling Group and Application Load Balancer, deploy only if Environment equals Dev.
+
+Parameters:
+  Environment:
+    Type: String
+    Description: "Environment name (e.g., Dev, Prod)"
+    AllowedValues:
+      - Dev
+      - Prod
+    Default: Dev
+
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    Description: EC2 instance type.
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair for SSH access.
+
+  VPC:
+    Type: AWS::EC2::VPC::Id
+    Description: ID of your VPC.
+
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: List of subnets for Auto Scaling and Load Balancer.
+
+Conditions:
+  IsDevEnvironment: !Equals [!Ref Environment, Dev]
+
+Resources:
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Condition: IsDevEnvironment
+    Properties:
+      LaunchTemplateData:
+        InstanceType: !Ref InstanceType
+        KeyName: !Ref KeyName
+        ImageId: ami-0f918f7e67a3323f0 # Replace with a valid AMI ID for your region.
+        SecurityGroupIds:
+          - !Ref InstanceSecurityGroup
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            apt update -y
+            apt install -y apache2
+            systemctl start apache2
+            systemctl enable apache2
+            echo "Welcome to the Auto Scaling EC2 instance" > /var/www/html/index.html
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Condition: IsDevEnvironment
+    Properties:
+      GroupDescription: Allow HTTP and SSH access.
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Condition: IsDevEnvironment
+    Properties:
+      Name: ApplicationLoadBalancer
+      Subnets: !Ref Subnets
+      SecurityGroups:
+        - !Ref InstanceSecurityGroup
+      Type: application
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Condition: IsDevEnvironment
+    Properties:
+      Name: TargetGroup
+      VpcId: !Ref VPC
+      Port: 80
+      Protocol: HTTP
+      TargetType: instance
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 3
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: 200
+
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Condition: IsDevEnvironment
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Condition: IsDevEnvironment
+    Properties:
+      VPCZoneIdentifier: !Ref Subnets
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MinSize: 1
+      MaxSize: 3
+      DesiredCapacity: 2
+      TargetGroupARNs:
+        - !Ref TargetGroup
