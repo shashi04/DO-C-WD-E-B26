@@ -59,7 +59,7 @@ Create a non-root user
 
 Configure SSH access
 
-Install Docker, Git, Java, and Kubernetes CLI tools
+Install Docker, Git, and Java tools.
 
 -> Write a Bash script to:
 
@@ -141,19 +141,19 @@ Public and private subnets
 
 Internet Gateway
 
--> EC2 instance for:
+-> EC2 instance for Jenkins server
 
-Jenkins server
+-> EKS Cluster with 5-7 Nodes
 
-Application Load Balancer (ALB)
+-> Application Load Balancer (ALB)
 
-Auto Scaling Group (ASG)
+-> Auto Scaling Group (ASG)
 
 -> S3 bucket for:
 
 Terraform remote state or application artifacts
 
-IAM roles and security groups
+-> IAM roles and security groups
 
 Deliverables
 =============
@@ -211,7 +211,7 @@ GitHub webhook
 
 Credentials
 
-Create a Jenkins pipeline to:
+-> Create a Jenkins pipeline to:
 
 Pull code from GitHub
 
@@ -238,9 +238,9 @@ Phase 7: Kubernetes (EKS)
 Tasks
 ======
 
--> Create an EKS cluster using Terraform.
+-> Create an EKS cluster using Terraform. (Done in Phase 4)
 
--> Deploy the application to Kubernetes:
+-> Deploy the application to Kubernetes: (Done in Phase 6)
 
 Deployment
 
@@ -301,5 +301,6 @@ Final Validation
 -> Infrastructure created using Terraform
 
 -> Configuration handled via Ansible
+
 
 -> Containers running in EKS
